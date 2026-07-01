@@ -1,0 +1,50 @@
+name: 定时推送今日热闻
+
+on:
+  schedule:
+    # 北京时间 09:00（UTC 01:00）
+    - cron: "0 1 * * *"
+    # 北京时间 18:00（UTC 10:00）
+    - cron: "0 10 * * *"
+  workflow_dispatch:  # 支持手动触发
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 安装依赖
+        run: pip install -r requirements.txt
+
+      - name: 写入 SMTP 配置
+        run: |
+          cat > config.yaml << 'EOF'
+          mail:
+            smtp_server: "${{ secrets.SMTP_SERVER }}"
+            smtp_port: ${{ secrets.SMTP_PORT }}
+            sender_email: "${{ secrets.SENDER_EMAIL }}"
+            sender_password: "${{ secrets.SENDER_PASSWORD }}"
+            sender_name: "今日热闻"
+            recipients:
+              - "${{ secrets.RECIPIENT_EMAIL }}"
+
+          content:
+            weibo: true
+            zhihu: true
+            baidu: ${{ secrets.BAIDU_ENABLED }}
+            limit: 20
+
+          schedule:
+            enabled: false
+          EOF
+
+      - name: 抓取并发送邮件
+        run: python main.py --now
