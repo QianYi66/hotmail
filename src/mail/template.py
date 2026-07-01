@@ -3,6 +3,7 @@
 邮件模板 - HTML 格式
 """
 
+from html import escape
 from typing import List
 
 from .. import beijing_now
@@ -11,7 +12,7 @@ from ..scraper import HotItem
 
 def build_html(
     items_by_source: dict[str, List[HotItem]],
-    title: str = "",
+    custom_title: str = "",
 ) -> str:
     """
     构建 HTML 邮件内容
@@ -29,7 +30,7 @@ def build_html(
     weekday = weekday_map[now.weekday()]
     time_str = now.strftime("%H:%M")
 
-    title = f"📰 今日热闻 | {date_str} {weekday}"
+    title = custom_title or f"📰 今日热闻 | {date_str} {weekday}"
 
     sections_html = ""
     total_items = 0
@@ -44,10 +45,10 @@ def build_html(
         rows = ""
         for item in items:
             rank = item.rank
-            title_text = item.title
-            link = item.link or ""
-            hot = item.hot or ""
-            tag = item.tag or ""
+            title_text = escape(item.title)
+            link = escape(item.link or "")
+            hot = escape(item.hot or "")
+            tag = escape(item.tag or "")
 
             # 标签着色
             tag_badge = ""
