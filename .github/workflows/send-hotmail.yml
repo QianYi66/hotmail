@@ -11,6 +11,11 @@ on:
 jobs:
   send:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    env:
+      TZ: Asia/Shanghai
 
     steps:
       - name: 检出代码
