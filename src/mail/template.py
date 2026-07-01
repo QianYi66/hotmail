@@ -3,9 +3,9 @@
 邮件模板 - HTML 格式
 """
 
-from datetime import datetime
 from typing import List
 
+from .. import beijing_now
 from ..scraper import HotItem
 
 
@@ -23,7 +23,7 @@ def build_html(
     Returns:
         HTML 字符串
     """
-    now = datetime.now()
+    now = beijing_now()
     date_str = now.strftime("%Y年%m月%d日")
     weekday_map = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
     weekday = weekday_map[now.weekday()]
@@ -256,7 +256,7 @@ def build_text(items_by_source: dict[str, List[HotItem]], title: str = "") -> st
     Returns:
         纯文本字符串
     """
-    now = datetime.now()
+    now = beijing_now()
     date_str = now.strftime("%Y-%m-%d")
     lines = [
         "=" * 60,

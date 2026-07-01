@@ -20,6 +20,7 @@ from typing import List
 # 确保引用本项目的路径正确
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+from src import beijing_now
 from src.config import AppConfig
 from src.mail import MailSender
 from src.mail.template import build_html, build_text
@@ -53,7 +54,7 @@ def setup_logger():
     logger.addHandler(ch)
 
     # 文件
-    log_file = os.path.join(log_dir, f"hotmail_{datetime.now().strftime('%Y%m%d')}.log")
+    log_file = os.path.join(log_dir, f"hotmail_{beijing_now().strftime('%Y%m%d')}.log")
     fh = logging.FileHandler(log_file, encoding="utf-8")
     fh.setLevel(logging.DEBUG)
     fh.setFormatter(formatter)
@@ -102,7 +103,7 @@ def fetch_all_hot(limit: int) -> dict[str, list]:
 
 def format_timestamp() -> str:
     """格式化的时间戳"""
-    now = datetime.now()
+    now = beijing_now()
     weekday = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
     return now.strftime(f"%Y-%m-%d %H:%M {weekday[now.weekday()]}")
 
@@ -125,7 +126,7 @@ def send_email(items_by_source: dict) -> bool:
     )
 
     # 标题
-    now = datetime.now()
+    now = beijing_now()
     date_str = now.strftime("%Y-%m-%d %H:%M")
     subject = f"今日热闻 | {date_str}"
 
@@ -143,7 +144,7 @@ def send_email(items_by_source: dict) -> bool:
 
 def preview(items_by_source: dict):
     """终端预览"""
-    now = datetime.now()
+    now = beijing_now()
     date_str = now.strftime("%Y-%m-%d %H:%M")
 
     print(f"\n{'=' * 60}")
