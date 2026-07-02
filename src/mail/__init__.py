@@ -28,6 +28,18 @@ class MailSender:
         self.sender_password = sender_password
         self.sender_name = sender_name
 
+    def _deliver(self, server, msg: MIMEText, recipients: List[str]) -> dict:
+        """向已连接的 SMTP 服务器投递邮件"""
+        sent_to = []
+        failed = {}
+        for recipient in recipients:
+            try:
+                server.sendmail(self.sender_email, [recipient], msg.as_string())
+                sent_to.append(recipient)
+            except Exception as e:
+                failed[recipient] = str(e)
+        return {"success": len(sent_to) > 0, "sent_to": sent_to, "failed": failed}
+
     def _send_raw(self, msg: MIMEText, recipients: List[str]) -> dict:
         """
         发送邮件
@@ -38,31 +50,16 @@ class MailSender:
         msg["From"] = formataddr((Header(self.sender_name, "utf-8").encode(), self.sender_email))
         msg["To"] = ", ".join(recipients)
 
-        sent_to = []
-        failed = {}
-
         if self.smtp_port == 465:
             context = ssl.create_default_context()
             with smtplib.SMTP_SSL(self.smtp_server, self.smtp_port, context=context, timeout=15) as server:
                 server.login(self.sender_email, self.sender_password)
-                for recipient in recipients:
-                    try:
-                        server.sendmail(self.sender_email, [recipient], msg.as_string())
-                        sent_to.append(recipient)
-                    except Exception as e:
-                        failed[recipient] = str(e)
+                return self._deliver(server, msg, recipients)
         else:
             with smtplib.SMTP(self.smtp_server, self.smtp_port, timeout=15) as server:
                 server.starttls()
                 server.login(self.sender_email, self.sender_password)
-                for recipient in recipients:
-                    try:
-                        server.sendmail(self.sender_email, [recipient], msg.as_string())
-                        sent_to.append(recipient)
-                    except Exception as e:
-                        failed[recipient] = str(e)
-
-        return {"success": len(sent_to) > 0, "sent_to": sent_to, "failed": failed}
+                return self._deliver(server, msg, recipients)
 
     def send_html(self, subject: str, html: str, recipients: List[str]) -> dict:
         """

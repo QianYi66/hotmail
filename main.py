@@ -14,6 +14,7 @@
 import logging
 import os
 import sys
+from functools import partial
 from typing import List
 
 # 确保引用本项目的路径正确
@@ -165,7 +166,7 @@ def preview(items_by_source: dict):
     print(f"{'=' * 60}\n")
 
 
-def do_send():
+def do_send(config: AppConfig):
     """执行一次抓取 + 发送"""
     logger.info(f"📥 开始抓取热搜...")
     items_by_source = fetch_all_hot(config.content.limit)
@@ -197,7 +198,6 @@ def print_banner(config: AppConfig):
 # ==============================================================
 
 def main():
-    global config
     config = AppConfig.load()
 
     # 解析简单参数
@@ -230,7 +230,7 @@ def main():
     if now_mode:
         # 立即发送模式
         logger.info("📬 立即发送模式")
-        do_send()
+        do_send(config)
         logger.info("✅ 发送完成")
         return
 
@@ -238,7 +238,7 @@ def main():
     scheduler = TaskScheduler()
     scheduler.setup(
         times=config.schedule.times,
-        job_func=do_send,
+        job_func=partial(do_send, config),
     )
 
     logger.info(f"⏰ 定时模式已启动")
@@ -247,7 +247,7 @@ def main():
 
     # 启动前立即执行一次（便于验证）
     if config.schedule.enabled:
-        scheduler.run_once(do_send)
+        scheduler.run_once(partial(do_send, config))
 
     # 进入循环
     scheduler.start()
