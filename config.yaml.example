@@ -30,6 +30,7 @@ content:
   weibo: true        # 微博热搜
   zhihu: true        # 知乎热搜
   baidu: false       # 百度热搜
+  douyin: false      # 抖音热搜
   limit: 20          # 每个来源显示前 N 条
 
 # ---------- 定时设置 ----------

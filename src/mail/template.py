@@ -40,7 +40,7 @@ def build_html(
         total_items += len(items)
 
         # 用 emoji 做来源图标
-        icon = {"微博热搜": "🔴", "知乎热榜": "💡", "百度热搜": "🔵"}.get(source_name, "📌")
+        icon = {"微博热搜": "🔴", "知乎热榜": "💡", "百度热搜": "🔵", "抖音热搜": "🎵"}.get(source_name, "📌")
 
         rows = ""
         for item in items:
@@ -98,11 +98,13 @@ def build_html(
         """
         sections_html += section
 
-    # 邮箱底部信息
+    # 邮箱底部信息 - 动态渲染数据来源
+    source_names = list(items_by_source.keys())
+    source_text = " · ".join(source_names)
     footer = f"""
     <div class="footer">
         <p>📅 {date_str} {weekday} {time_str} · 自动发送</p>
-        <p>数据来源: 微博 · 知乎 · 百度</p>
+        <p>数据来源: {source_text}</p>
         <hr>
         <p class="note">本邮件由「今日热闻」自动生成，仅供个人参考</p>
     </div>

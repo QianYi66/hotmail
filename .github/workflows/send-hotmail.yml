@@ -45,6 +45,7 @@ jobs:
             weibo: true
             zhihu: true
             baidu: ${{ secrets.BAIDU_ENABLED }}
+            douyin: true
             limit: 20
 
           schedule:

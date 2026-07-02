@@ -34,6 +34,7 @@ class ContentConfig:
         self.weibo: bool = data.get("weibo", True)
         self.zhihu: bool = data.get("zhihu", True)
         self.baidu: bool = data.get("baidu", False)
+        self.douyin: bool = data.get("douyin", False)
         self.limit: int = data.get("limit", 20)
 
 

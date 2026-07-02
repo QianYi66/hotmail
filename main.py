@@ -28,6 +28,7 @@ from src.scheduler import TaskScheduler
 from src.scraper.weibo import WeiboHotScraper
 from src.scraper.zhihu import ZhihuHotScraper
 from src.scraper.baidu import BaiduHotScraper
+from src.scraper.douyin import DouyinHotScraper
 
 
 def setup_logger():
@@ -86,6 +87,9 @@ def fetch_all_hot(limit: int) -> dict[str, list]:
 
     if config.content.baidu:
         sources["百度热搜"] = BaiduHotScraper()
+
+    if config.content.douyin:
+        sources["抖音热搜"] = DouyinHotScraper()
 
     for name, scraper in sources.items():
         try:
@@ -187,7 +191,7 @@ def print_banner(config: AppConfig):
 {'=' * 50}
   邮箱:    {config.mail.sender_email} -> {', '.join(config.mail.recipients)}
   SMTP:    {config.mail.smtp_server}:{config.mail.smtp_port}
-  内容:    {'微博 ' if config.content.weibo else ''}{'知乎 ' if config.content.zhihu else ''}{'百度 ' if config.content.baidu else ''}
+  内容:    {'微博 ' if config.content.weibo else ''}{'知乎 ' if config.content.zhihu else ''}{'百度 ' if config.content.baidu else ''}{'抖音 ' if config.content.douyin else ''}
   定时:    {', '.join(config.schedule.times) if config.schedule.enabled else '手动模式'}
 {'=' * 50}
 """)
