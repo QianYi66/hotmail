@@ -45,10 +45,10 @@ def build_html(
         rows = ""
         for item in items:
             rank = item.rank
-            title_text = escape(item.title)
-            link = escape(item.link or "")
-            hot = escape(item.hot or "")
-            tag = escape(item.tag or "")
+            title_text = escape(str(item.title))
+            link = escape(str(item.link or ""))
+            hot = escape(str(item.hot or ""))
+            tag = escape(str(item.tag or ""))
 
             # 标签着色
             tag_badge = ""
