@@ -7,6 +7,7 @@
 """
 
 from typing import List, Optional
+import urllib.parse
 
 import requests
 
@@ -82,12 +83,9 @@ class DouyinHotScraper(BaseHotScraper):
             label_num = entry.get("label", 0)
             tag = self.LABEL_MAP.get(label_num, "")
 
-            # 链接：用 group_id 构造跳转链接
-            group_id = entry.get("group_id", "")
-            if group_id:
-                link = f"https://www.douyin.com/video/{group_id}"
-            else:
-                link = "https://www.douyin.com/hot"
+            # 链接：抖音热搜词本质是搜索关键词，跳转到搜索结果页
+            keyword = urllib.parse.quote(title, safe='')
+            link = f"https://www.douyin.com/search/{keyword}"
 
             items.append(HotItem(
                 rank=rank,
